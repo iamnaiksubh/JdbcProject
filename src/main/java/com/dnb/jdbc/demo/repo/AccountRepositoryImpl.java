@@ -104,7 +104,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             try {
                 preparedStatement = connection.get().prepareStatement(deleteQuery);
                 preparedStatement.setString(1, accountId);
-                int effectedRow = preparedStatement.executeUpdate(deleteQuery);
+                int effectedRow = preparedStatement.executeUpdate();
 
                 if(effectedRow > 0)
                     return true;
