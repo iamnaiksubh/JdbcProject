@@ -33,7 +33,7 @@ public class JDBCApplication {
             choice = sc.nextInt();
 
             if (choice < 1 || choice > 5) {
-                System.out.println("Enter correct ");
+                System.out.println("Enter correct choice");
                 continue;
             }
 
