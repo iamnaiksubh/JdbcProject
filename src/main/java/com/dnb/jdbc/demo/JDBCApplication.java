@@ -1,7 +1,10 @@
 package com.dnb.jdbc.demo;
 
+import com.dnb.jdbc.demo.config.Config;
 import com.dnb.jdbc.demo.dto.Account;
-import com.dnb.jdbc.demo.services.AccountServiceImpl;
+import com.dnb.jdbc.demo.services.AccountService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,9 +14,13 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class JDBCApplication {
+    private static AccountService accountService = null;
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(Config.class);
+        accountService = applicationContext.getBean(AccountService.class);
 
         int choice = -1;
         do {
@@ -45,7 +52,7 @@ public class JDBCApplication {
     }
 
     private static void getAllAccount() {
-        List<Account> accountList = AccountServiceImpl.getInstance().getAllAccount();
+        List<Account> accountList = accountService.getAllAccount();
 
         accountList.forEach(account -> {
             System.out.println(account.getAccountId() + " " + account.getAccountHolderName() + " " + account.getAccountType() + " " +
@@ -57,7 +64,7 @@ public class JDBCApplication {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the account Id which you want to delete : ");
         String accountId = sc.next();
-        boolean result = AccountServiceImpl.getInstance().deleteAccount(accountId);
+        boolean result = accountService.deleteAccount(accountId);
 
         if (result) {
             System.out.println("Account deleted");
@@ -102,7 +109,7 @@ public class JDBCApplication {
         }
 
         accounts.forEach(account -> {
-            AccountServiceImpl.getInstance().createAccount(account);
+            accountService.createAccount(account);
         });
     }
 
@@ -115,7 +122,7 @@ public class JDBCApplication {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the account Id : ");
         String accountId = sc.next();
-        Optional<Account> result = AccountServiceImpl.getInstance().getAccountById(accountId);
+        Optional<Account> result = accountService.getAccountById(accountId);
 
         if (result.isPresent()) {
             Account account = result.get();

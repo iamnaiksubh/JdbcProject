@@ -2,42 +2,30 @@ package com.dnb.jdbc.demo.services;
 
 import com.dnb.jdbc.demo.dto.Account;
 import com.dnb.jdbc.demo.repo.AccountRepository;
-import com.dnb.jdbc.demo.repo.AccountRepositoryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class AccountServiceImpl implements AccountService {
 
-    private static AccountService accountService = null;
-    private AccountServiceImpl(){
+    @Autowired
+    public AccountRepository accountRepository;
 
-    }
-
-    public static AccountService getInstance(){
-        synchronized (AccountServiceImpl.class){
-            if (accountService == null){
-                accountService = new AccountServiceImpl();
-            }
-        }
-
-        return accountService;
-    }
     @Override
     public Account createAccount(Account account) {
-        AccountRepository accountRepository = AccountRepositoryImpl.getInstance();
         return accountRepository.createAccount(account);
     }
 
     @Override
     public Optional<Account> getAccountById(String accountId) {
-        AccountRepository accountRepository = AccountRepositoryImpl.getInstance();
-        return  accountRepository.getAccountById(accountId);
+        return accountRepository.getAccountById(accountId);
     }
 
     @Override
     public boolean deleteAccount(String accountId) {
-        AccountRepository accountRepository = AccountRepositoryImpl.getInstance();
         return accountRepository.deleteAccount(accountId);
     }
 
@@ -49,7 +37,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAllAccount() {
-        AccountRepository accountRepository = AccountRepositoryImpl.getInstance();
         return accountRepository.getAllAccount();
     }
 }

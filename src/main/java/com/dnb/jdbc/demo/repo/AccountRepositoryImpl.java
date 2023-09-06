@@ -2,31 +2,22 @@ package com.dnb.jdbc.demo.repo;
 
 import com.dnb.jdbc.demo.dto.Account;
 import com.dnb.jdbc.demo.utils.DBUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class AccountRepositoryImpl implements AccountRepository {
 
-    private static AccountRepository accountRepository;
-
-    private AccountRepositoryImpl() {
-
-    }
-
-    public static AccountRepository getInstance() {
-        synchronized (AccountRepositoryImpl.class) {
-            if (accountRepository == null) accountRepository = new AccountRepositoryImpl();
-        }
-
-        return accountRepository;
-    }
-
+    @Autowired
+    private DBUtils dbUtils;
     @Override
     public Account createAccount(Account account) {
-        Optional<Connection> connection = DBUtils.getConnection();
+        Optional<Connection> connection = dbUtils.getConnection();
         String createAccountStatement = "insert into account " + "(accountId, accountHolderName, accountType, balance, contactNumber, address, accountCreatedDate, dob, accountStatus) " + "values (?,?,?,?,?,?,?,?,?)";
 
         PreparedStatement preparedStatement = null;
@@ -50,7 +41,7 @@ public class AccountRepositoryImpl implements AccountRepository {
                 e.printStackTrace();
             } finally {
                 if (connection.isPresent()) {
-                    DBUtils.closeConnection(connection.get());
+                    dbUtils.closeConnection(connection.get());
                 }
             }
         }
@@ -60,7 +51,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Optional<Account> getAccountById(String accountId) {
-        Optional<Connection> connection = DBUtils.getConnection();
+        Optional<Connection> connection = dbUtils.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String query = "select * from account where accountId = ?";
@@ -88,7 +79,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             } catch (SQLException e) {
                 e.printStackTrace();
             }finally {
-                connection.ifPresent(DBUtils::closeConnection);
+                connection.ifPresent(dbUtils::closeConnection);
             }
         }
         return Optional.empty();
@@ -96,7 +87,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public boolean deleteAccount(String accountId) {
-        Optional<Connection> connection = DBUtils.getConnection();
+        Optional<Connection> connection = dbUtils.getConnection();
         PreparedStatement preparedStatement = null;
         String deleteQuery = "delete from account where accountId = ?";
 
@@ -112,7 +103,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
-                connection.ifPresent(DBUtils::closeConnection);
+                connection.ifPresent(dbUtils::closeConnection);
             }
         }
 
@@ -121,7 +112,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public boolean updateAccount(String accountId) {
-        Optional<Connection> connection = DBUtils.getConnection();
+        Optional<Connection> connection = dbUtils.getConnection();
         String deleteQuery = "alter account where accountId=?";
 
         PreparedStatement preparedStatement = null;
@@ -137,7 +128,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
-                connection.ifPresent(DBUtils::closeConnection);
+                connection.ifPresent(dbUtils::closeConnection);
             }
         }
         return false;
@@ -145,7 +136,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public List<Account> getAllAccount() {
-        Optional<Connection> connection = DBUtils.getConnection();
+        Optional<Connection> connection = dbUtils.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String query = "select * from account";
@@ -175,7 +166,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             } catch (SQLException e) {
                 e.printStackTrace();
             }finally {
-                connection.ifPresent(DBUtils::closeConnection);
+                connection.ifPresent(dbUtils::closeConnection);
             }
         }
         return null;
